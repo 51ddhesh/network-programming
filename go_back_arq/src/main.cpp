@@ -2,38 +2,21 @@
 #include <thread>
 #include <algorithm>
 #include <string>
-#include <ctime>
-#include <sstream>
-#include <iomanip>
 #include <vector>
 #include "random_.hpp"
+#include "values.hpp"
+#include "packet.hpp"
+#include "utils.hpp"
 
-// namespace to hold constants
-namespace values {
-    constexpr size_t WINDOW_SIZE = 4;
-    constexpr unsigned int MINIMUM_VALUE = 0;
-    constexpr unsigned int MAXIMUM_VALUE = 100;
-}
-
-// Function to get current time
-std::string getTime() {
-    // Convert std::chrono::_V2::system_clock::time_point to std::time_t 
-    std::time_t t= std::chrono::system_clock::to_time_t(std::chrono::high_resolution_clock::now());
-    // 'broken-down' time structure `tm`
-    std::tm tm = *std::localtime(&t);
-    // output string stream
-    std::ostringstream oss;
-    // format the time output
-    oss << std::put_time(&tm, "%d-%m-%Y %H:%M:%S");
-    // return as std::string
-    return oss.str();
-}
-
+// Function to generate a packet
 std::pair<std::vector<int>, std::string> generatePacket() {
+    // Init a std::vector of <int> of values::WINDOW_SIZE
     std::vector<int> data(values::WINDOW_SIZE);
+    // fill the vector with random values
     for (size_t i = 0; i < values::WINDOW_SIZE; i++) {
         data[i] = random_::getInt(values::MINIMUM_VALUE, values::MAXIMUM_VALUE);
     }
+    // get the current time in [date-month-year HH:MM:SS] format
     std::string timestamp = getTime();
     std::pair<std::vector<int>, std::string> packet = std::make_pair(data, timestamp);
     return packet;
